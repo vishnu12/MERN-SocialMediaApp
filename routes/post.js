@@ -9,6 +9,7 @@ router.get('/allposts',requireSignIn,(req,res)=>{
     Post.find()
     .populate('postedBy','_id name email')
     .populate('comments.postedBy','_id name')
+    .sort('-createdAt')
     .then(posts=>{
         res.json({posts})
     })
@@ -38,6 +39,7 @@ router.get('/myposts',requireSignIn,(req,res)=>{
 
     Post.find({postedBy:req.user._id})
     .populate('postedBy','_id name')
+    .sort('-createdAt')
     .then(posts=>res.json({posts}))
     .catch(err=>console.log(err))
 })
@@ -48,6 +50,7 @@ router.put('/like',requireSignIn,(req,res)=>{
         $push:{likes:req.user._id}
        
     },{new:true})
+    .populate('postedBy','_id name')
     .exec((err,data)=>{
         if(err) return res.status(422).json({error:'err'})
         res.json(data)
@@ -61,6 +64,7 @@ router.put('/unlike',requireSignIn,(req,res)=>{
         $pull:{likes:req.user._id}
        
     },{new:true})
+    .populate('postedBy','_id name')
     .exec((err,data)=>{
         if(err) return res.status(422).json({error:'err'})
         res.json(data)
@@ -101,6 +105,7 @@ router.delete('/deletepost/:postId',requireSignIn,(req,res)=>{
         }
     })
 })
+
 
 router.put('/deletecomment/:postId/:commentId',requireSignIn,(req,res)=>{
     console.log(req.headers)

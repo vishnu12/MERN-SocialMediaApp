@@ -4,11 +4,16 @@ const mongoose=require('mongoose')
 const User=require('../models/user')
 const bcrypt=require('bcryptjs')
 const jwt=require('jsonwebtoken')
-const {JWT_SECRET} =require('../config/dev')
+const nodemailer=require('nodemailer')
+const sendGridTransport=require('nodemailer-sendgrid-transport')
+
+const transporter=nodemailer.createTransport({
+    auth:{
+        api_key:'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'
+    }
+})
+
 const requireSignIn=require('../middlewares/requireSignIn')
-
-
-
 
 router.post('/signup',(req,res)=>{
     const {email,password,name}=req.body
@@ -23,7 +28,15 @@ router.post('/signup',(req,res)=>{
           req.body.password=hashedPassword
           const newUser=new User(req.body)
           newUser.save()
-          .then(savedUser=>res.json({message:'user saved successfully',savedUser}))
+          .then(savedUser=>{
+              transporter.sendMail({
+                  to:savedUser.email,
+                  from:'no-reply@instagram.com',
+                  subject:'signup success',
+                  html:'<h1>Welcome to Instagram</h1>'
+              })
+              res.json({message:'user saved successfully',savedUser})
+            })
           .catch(err=>console.log(err))
 
       })

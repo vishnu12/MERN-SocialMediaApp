@@ -68,7 +68,12 @@ router.put('/unfollow',requireSignIn,(req,res)=>{
 
  router.delete('/user/:userId',requireSignIn,(req,res)=>{
     User.findOneAndRemove({_id:req.params.userId})
-    .then(result=>res.json(result))
+    .then(result=>{
+        Post.deleteMany({postedBy:result._id},(err,data)=>{
+            if(err) return res.json(err)
+            res.json({message:'all posts deleted'})
+        })
+    })
     .catch(err=>res.json(err))
 })
 

@@ -14,7 +14,6 @@ const Home = () => {
   const [comments, setCommets] = useState('')
   const token=JSON.parse(localStorage.getItem('jwt'))
   
-  console.log(state)
 
   useEffect(()=>{
    preload()
@@ -147,7 +146,7 @@ console.log(data)
     <div className='home'>
   {
     data.map((item,k)=>{
-     return item.postedBy &&  (<div className='card home-card' key={k}>
+    return (<div className='card home-card' key={k}>
       <div style={{display:'flex',justifyContent:'space-between'}}>
        <img src={state && state.pic} alt='' style={{height:'30px',width:'45px',marginTop: '16px'}}/> 
       <h5 style={{display:'flex',justifyContent:'space-between',padding:'5px'}}>
@@ -186,7 +185,7 @@ console.log(data)
    {
      item.comments.map((record,k)=>{
        return(
-         <h6 key={k} style={{display:'flex',padding:'5px',marginLeft:'5px'}}>
+        record.postedBy && <h6 key={k} style={{display:'flex',padding:'5px',marginLeft:'5px'}}>
            <span style={{fontWeight:'500'}}>{record.postedBy.name}</span>
            {record.text}
            {
