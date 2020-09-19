@@ -5,13 +5,13 @@ const User=require('../models/user')
 const bcrypt=require('bcryptjs')
 const jwt=require('jsonwebtoken')
 const nodemailer=require('nodemailer')
-const sendGridTransport=require('nodemailer-sendgrid-transport')
+const sendgridTransport=require('nodemailer-sendgrid-transport')
 
-const transporter=nodemailer.createTransport({
+const transporter=nodemailer.createTransport(sendgridTransport({
     auth:{
         api_key:'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'
     }
-})
+}))
 
 const requireSignIn=require('../middlewares/requireSignIn')
 
@@ -31,7 +31,7 @@ router.post('/signup',(req,res)=>{
           .then(savedUser=>{
               transporter.sendMail({
                   to:savedUser.email,
-                  from:'no-reply@instagram.com',
+                  from:'vishnu007jr@gmail.com',
                   subject:'signup success',
                   html:'<h1>Welcome to Instagram</h1>'
               })
